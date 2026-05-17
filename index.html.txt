@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalShipLive - Package Tracking</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:Arial;background:#f0f4f8;padding:20px}
+        .container{max-width:900px;margin:0 auto;background:white;border-radius:32px;padding:30px}
+        h1{color:#003366}
+        .track-box{background:#f8fafc;border-radius:24px;padding:25px;margin:25px 0}
+        input,select,button{padding:14px;font-size:16px;border-radius:60px;margin:5px}
+        button{background:#003366;color:white;border:none;cursor:pointer}
+        .result{background:white;border-radius:24px;padding:20px;margin-top:20px}
+        .delivered{background:#dcfce7;color:#15803d;padding:6px 16px;border-radius:40px;display:inline-block}
+        .transit{background:#fef3c7;color:#b45309;padding:6px 16px;border-radius:40px;display:inline-block}
+        .timeline{border-left:3px solid #ccc;padding-left:18px;margin-top:15px}
+        .timeline-item{margin-bottom:14px}
+        footer{text-align:center;margin-top:35px;color:#666}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🌍 GlobalShipLive</h1>
+    <p>Real-time tracking — Worldwide delivery</p>
+    <div class="track-box">
+        <input type="text" id="trackingInput" placeholder="Tracking number">
+        <select id="carrierSelect">
+            <option>Auto detect</option>
+            <option>UPS</option>
+            <option>FedEx</option>
+            <option>DHL</option>
+        </select>
+        <button id="trackBtn">Track package</button>
+        <div id="messageArea"></div>
+        <div id="resultArea"></div>
+    </div>
+    <footer>GlobalShipLive — Professional tracking service</footer>
+</div>
+<script>
+    const packages = {
+        "DEMO001": {status:"Delivered",statusClass:"delivered",location:"Paris, France",lastUpdate:"2025-05-16",eta:"May 16, 2025",history:["May 14 - Picked up","May 15 - In transit Lyon","May 16 - Delivered"]},
+        "DEMO002": {status:"In Transit",statusClass:"transit",location:"Lyon, France",lastUpdate:"2025-05-17",eta:"May 19, 2025",history:["May 15 - Label created","May 16 - Picked up","May 17 - In transit Lyon"]}
+    };
+    document.getElementById('trackBtn').onclick = () => {
+        const num = document.getElementById('trackingInput').value.trim();
+        const msg = document.getElementById('messageArea');
+        const result = document.getElementById('resultArea');
+        if(!num){msg.innerHTML='<p style="color:red">Enter a number</p>';result.innerHTML='';return;}
+        msg.innerHTML='<p>🔍 Searching...</p>';
+        setTimeout(()=>{
+            const data = packages[num];
+            if(data){
+                msg.innerHTML='<p style="color:green">✅ Package found</p>';
+                let history = '<div class="timeline">';
+                data.history.forEach(h=>{history+=`<div class="timeline-item">📌 ${h}</div>`;});
+                history+='</div>';
+                result.innerHTML = <div class="result"><div class="${data.statusClass}">${data.status}</div><p>📍 ${data.location}</p><p>📅 ${data.eta}</p>${history}</div>;
+            } else {
+                msg.innerHTML='<p style="color:red">❌ Not found. Try: DEMO001 or DEMO002</p>';
+                result.innerHTML='';
+            }
+        },800);
+    };
+</script>
+</body>
+</html>
